@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EbookAPI.DataAccess.Entites
+﻿namespace EbookAPI.BussinessLogic.DTOs
 {
-    public partial class Author
+    public class AuthorDto
     {
-        public Author()
-        {
-            BookAuthors = new HashSet<BookAuthor>();
-        }
-
         public int AuthorId { get; set; }
         public string LastName { get; set; } = null!;
         public string FirstName { get; set; } = null!;
@@ -19,7 +11,5 @@ namespace EbookAPI.DataAccess.Entites
         public string? State { get; set; }
         public string? Zip { get; set; }
         public string EmailAddress { get; set; } 
-
-        public virtual ICollection<BookAuthor> BookAuthors { get; set; }
     }
 }

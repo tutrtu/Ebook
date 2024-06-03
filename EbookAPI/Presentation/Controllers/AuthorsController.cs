@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using EbookAPI.Models;
-using EbookAPI.DataAccess.Entites;
+using EbookAPI.BusinessLogic.Interfaces;
+using EbookAPI.BusinessLogic.DTOs;
+using EbookAPI.BussinessLogic.DTOs;
 
 namespace EbookAPI.Presentation.Controllers
 {
@@ -14,111 +10,78 @@ namespace EbookAPI.Presentation.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly eBookStoreContext _context;
+        private readonly IAuthorService _authorService;
 
-        public AuthorsController(eBookStoreContext context)
+        public AuthorsController(IAuthorService authorService)
         {
-            _context = context;
+            _authorService = authorService;
         }
 
-        // GET: api/Authors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
+        public async Task<IActionResult> GetAllAuthor()
         {
-            if (_context.Authors == null)
-            {
-                return NotFound();
-            }
-            return await _context.Authors.ToListAsync();
+            var authorList = await _authorService.GetAllAuthor();
+            if (authorList == null)
+                return NotFound(new { message = "Author list not found" });
+
+            return Ok(authorList);
         }
 
-        // GET: api/Authors/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthor(int id)
+        public async Task<IActionResult> GetAuthorById(int id)
         {
-            if (_context.Authors == null)
-            {
-                return NotFound();
-            }
-            var author = await _context.Authors.FindAsync(id);
-
+            var author = await _authorService.GetAuthorById(id);
             if (author == null)
-            {
-                return NotFound();
-            }
+                return NotFound(new { message = "Author not found" });
 
-            return author;
+            return Ok(author);
         }
 
-        // PUT: api/Authors/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(int id, Author author)
-        {
-            if (id != author.AuthorId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(author).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AuthorExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Authors
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Author>> PostAuthor(Author author)
+        public async Task<IActionResult> AddAuthor([FromBody] AuthorDto authorDto)
         {
-            if (_context.Authors == null)
+            if (authorDto == null)
             {
-                return Problem("Entity set 'eBookStoreContext.Authors'  is null.");
+                return BadRequest("Author data is null.");
             }
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAuthor", new { id = author.AuthorId }, author);
+            var addedAuthor = await _authorService.AddAuthor(authorDto);
+            return Ok(addedAuthor);
         }
 
-        // DELETE: api/Authors/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
-            if (_context.Authors == null)
-            {
-                return NotFound();
-            }
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null)
-            {
-                return NotFound();
-            }
-
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
+            var result = await _authorService.DeleteAuthor(id);
+            if (!result)
+                return NotFound(new { message = "Author not found" });
 
             return NoContent();
         }
 
-        private bool AuthorExists(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAuthor(int id, [FromBody] AuthorDto updatedAuthorDto)
         {
-            return (_context.Authors?.Any(e => e.AuthorId == id)).GetValueOrDefault();
+            if (updatedAuthorDto == null)
+            {
+                return BadRequest("Updated author data is null.");
+            }
+
+            var existingAuthor = await _authorService.GetAuthorById(id);
+            if (existingAuthor == null)
+            {
+                return NotFound(new { message = "Author not found." });
+            }
+
+            updatedAuthorDto.AuthorId = id; // Ensure the ID in the DTO matches the ID in the route
+
+            var updatedAuthor = await _authorService.UpdateAuthor(id, updatedAuthorDto);
+            if (updatedAuthor == null)
+            {
+                return BadRequest(new { message = "Failed to update author." });
+            }
+
+            return Ok(updatedAuthor);
         }
     }
 }

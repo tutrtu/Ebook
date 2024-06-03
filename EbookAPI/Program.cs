@@ -1,5 +1,6 @@
 using EbookAPI.BusinessLogic.Interfaces;
 using EbookAPI.BusinessLogic.Services;
+using EbookAPI.BussinessLogic.Services;
 using EbookAPI.DataAccess.Interfaces;
 using EbookAPI.DataAccess.Repositories;
 using EbookAPI.Models;
@@ -18,10 +19,14 @@ builder.Services.AddDbContext<eBookStoreContext>(options =>
 // Register repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IBookService, BookService>(); 
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IAuthorService, AuthorService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
