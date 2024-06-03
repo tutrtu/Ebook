@@ -7,5 +7,6 @@ namespace EbookAPI.BusinessLogic.Interfaces
     public interface IUserService
     {
         Task<UserDto> GetUserByEmailAndPasswordAsync(string email, string password);
+        Task<UserDto> RegisterUserAsync(UserDto newUser);
     }
 }

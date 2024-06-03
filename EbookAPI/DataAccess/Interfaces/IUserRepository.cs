@@ -7,5 +7,6 @@ namespace EbookAPI.DataAccess.Interfaces
     public interface IUserRepository
     {
         Task<User> GetUserByEmailAndPasswordAsync(string email, string password);
+        Task<User> AddUserAsync(string email, string password);
     }
 }

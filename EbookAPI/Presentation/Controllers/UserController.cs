@@ -25,5 +25,19 @@ namespace EbookAPI.Presentation.Controllers
 
             return Ok(user);
         }
+
+        [HttpPost("registerUser")]
+        public async Task<IActionResult> RegisterUser([FromBody] UserDto newUser)
+        {
+            if (newUser == null)
+                return BadRequest(new { message = "User data is missing" });
+
+            var registeredUser = await _userService.RegisterUserAsync(newUser);
+            if (registeredUser == null)
+                return BadRequest(new { message = "User with the same email already exists" });
+
+            return CreatedAtAction(nameof(GetUserByEmailAndPassword), new { email = newUser.EmailAddress, password = newUser.Password }, registeredUser);
+        }
+
     }
 }
