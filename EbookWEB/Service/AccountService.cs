@@ -32,7 +32,7 @@ namespace EbookWEB.Service
 
             // Send request with query string
             HttpResponseMessage response = await _httpClient.GetAsync(_apiUrl + "?" + queryStringParams);
-            response.EnsureSuccessStatusCode();
+            
             string responseData = await response.Content.ReadAsStringAsync();
             UserDto account = JsonConvert.DeserializeObject<UserDto>(responseData);
             return account;

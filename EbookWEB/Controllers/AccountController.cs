@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using EbookAPI.BussinessLogic;
-using EbookAPI.BusinessLogic.Interfaces;
+using EbookWEB.Service;
 using EbookAPI.BusinessLogic.DTOs;
-
+using Newtonsoft.Json;
 
 namespace EbookWEB.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IUserService _userService;
+        private readonly AccountService _userService;
 
-        public AccountController(IUserService userService)
+        public AccountController(AccountService userService)
         {
             _userService = userService;
         }
@@ -35,13 +35,13 @@ namespace EbookWEB.Controllers
             if (ModelState.IsValid)
             {
                 // Check credentials using UserService
-                var user = await _userService.GetUserByEmailAndPasswordAsync(model.Email, model.Password);
+                var user = await _userService.GetAccountByEmailAndPassword(model.Email, model.Password);
                 if (user != null)
                 {
-                    // Perform any additional authentication logic if needed
-                    // For example, setting a session variable
+                    string userJson = JsonConvert.SerializeObject(user);
+                    HttpContext.Session.SetString("user", userJson);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Author");
                 }
                 ModelState.AddModelError("", "Invalid email or password");
             }
@@ -51,12 +51,9 @@ namespace EbookWEB.Controllers
                 Login = model,
                 Register = new RegisterViewModel()
             };
-            return View("Auth", combinedModel);
+            return View(combinedModel);
         }
-
-        
 
         // Other actions for registration, etc.
     }
-
 }

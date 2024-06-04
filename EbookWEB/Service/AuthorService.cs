@@ -1,7 +1,11 @@
-﻿using EbookWEB.Models;
+﻿using EbookAPI.DataAccess.Entites;
+using EbookWEB.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace EbookWEB.Service
@@ -37,5 +41,30 @@ namespace EbookWEB.Service
             return authorDto;
         }
 
+        public async Task<AuthorDto> CreateAuthorAsync(AuthorDto author)
+        {
+            StringContent content = new StringContent(JsonConvert.SerializeObject(author), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PostAsync(_apiUrl, content);
+            response.EnsureSuccessStatusCode();
+            string responseData = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<AuthorDto>(responseData);
+        }
+
+        public async Task<AuthorDto> UpdateAuthorAsync(int id, AuthorDto author)
+        {
+            StringContent content = new StringContent(JsonConvert.SerializeObject(author), Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PutAsync($"{_apiUrl}/{id}", content);
+            response.EnsureSuccessStatusCode();
+            string responseData = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<AuthorDto>(responseData);
+        }
+
+        public async Task DeleteAuthorAsync(int id)
+        {
+            HttpResponseMessage response = await _httpClient.DeleteAsync($"{_apiUrl}/{id}");
+            response.EnsureSuccessStatusCode();
+        }
+
     }
+
 }

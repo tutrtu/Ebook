@@ -1,0 +1,54 @@
+﻿@model List<EbookWEB.Models.BookDto>
+@{
+	List<EbookWEB.Models.PublisherDto> pubs = ViewData["Publisher"] as List<EbookWEB.Models.PublisherDto>;
+}
+<h1>Enter Book information</h1>
+<form method="post" action="Books" class="mt-5">
+	<div class="mb-3">
+		<label class="form-label">Title</label>
+		<input type="text" class="form-control" name="title" />
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Price</label>
+		<input type="text" class="form-control" name="price" />
+	</div>
+
+	<div class="mb-3">
+		<label class="form-label">Publisher</label>
+		<select class="form-control" name="pubId">
+			@foreach (EbookWEB.Models.PublisherDto pub in pubs)
+			{
+				<option value="@pub.PubId">@pub.PublisherName</option>
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Save</button>
+</form>
+<h1>Books</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Title</th>
+			<th>Author</th>
+			<th>Publisher</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var book in Model)
+		{
+			<tr>
+				<td>@book.BookId</td>
+				<td>@book.Title</td>
+				@* <td>@(book. == null ? "No info" : book.Pub.PublisherName)</td> *@
+				<td>
+					<a href="Books/Update/@book.BookId">View</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

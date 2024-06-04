@@ -1,5 +1,5 @@
 using EbookAPI.BusinessLogic.Interfaces;
-using EbookAPI.BusinessLogic.Services;
+
 using EbookAPI.DataAccess.Interfaces;
 using EbookAPI.DataAccess.Repositories;
 using EbookWEB.Service;
@@ -10,12 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
+builder.Services.AddSession(opt => opt.IdleTimeout = TimeSpan.FromMinutes(15));
 
 // Register your UserService implementation
 builder.Services.AddHttpClient<AccountService>();
 
 builder.Services.AddHttpClient<AuthorService>();
+builder.Services.AddHttpClient<PublisherService>();
 
 var app = builder.Build();
 
@@ -27,6 +28,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
 
