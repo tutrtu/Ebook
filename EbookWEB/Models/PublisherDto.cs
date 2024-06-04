@@ -1,4 +1,4 @@
-﻿namespace EbookAPI.BussinessLogic.DTOs
+﻿namespace EbookWEB.Models
 {
     public class PublisherDto
     {

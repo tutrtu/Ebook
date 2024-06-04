@@ -110,3 +110,7 @@ INSERT INTO [User] (email_address, password, source, first_name, middle_name, la
 INSERT INTO BookAuthor (author_id, book_id, author_order, royalty_percentage) VALUES 
 (1, 1, 1, 50),
 (2, 2, 1, 60);
+
+ALTER TABLE Author
+ALTER COLUMN email_address NVARCHAR(100) NULL;
+GO

@@ -1,0 +1,50 @@
+﻿@model List<EbookWEB.Models.AuthorDto>
+
+@{
+    ViewBag.Title = "Authors";
+}
+
+<h2>Authors</h2>
+
+<form asp-action="Index" method="get">
+    <div class="form-group">
+        <input type="number" name="searchId" class="form-control" placeholder="Search by author ID" value="@ViewData["CurrentFilter"]" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Author", new { id = item.AuthorId })" class="btn btn-primary">Edit</a>
+                        <a href="@Url.Action("Delete", "Author", new { id = item.AuthorId })" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3">No authors available.</td>
+            </tr>
+        }
+    </tbody>
+</table>

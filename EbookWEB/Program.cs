@@ -4,17 +4,18 @@ using EbookAPI.DataAccess.Interfaces;
 using EbookAPI.DataAccess.Repositories;
 using EbookWEB.Service;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+
 
 // Register your UserService implementation
 builder.Services.AddHttpClient<AccountService>();
 
+builder.Services.AddHttpClient<AuthorService>();
 
 var app = builder.Build();
 

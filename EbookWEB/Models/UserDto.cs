@@ -1,4 +1,4 @@
-﻿namespace EbookAPI.BusinessLogic.DTOs
+﻿namespace EbookWEB.Models
 {
     public class UserDto
     {
